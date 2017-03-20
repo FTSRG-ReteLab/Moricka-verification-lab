@@ -3,6 +3,7 @@ package hu.bme.mit.train.controller;
 public class SpeedUpdaterThread extends Thread {
 	public TrainControllerImpl update;
 	
+	@Override
 	public void run(){
 		while(true){
 			update.followSpeed();
