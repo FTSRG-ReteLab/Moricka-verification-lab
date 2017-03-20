@@ -7,20 +7,40 @@ public class TrainControllerImpl implements TrainController {
 	private int step = 0;
 	private int referenceSpeed = 0;
 	private int speedLimit = 0;
+	
+	boolean threadStarted = false;
+	
+	TrainControllerImpl(){
+		followSpeed();//followSpeed will be invoked here, no more required
+	}
 
 	@Override
 	public void followSpeed() {
-		if (referenceSpeed < 0) {
-			referenceSpeed = 0;
-		} else {
-		    if(referenceSpeed+step > 0) {
-                referenceSpeed += step;
-            } else {
-		        referenceSpeed = 0;
-            }
+		if(threadStarted)
+			return;
+		
+		threadStarted = true;
+		
+		while(true){	
+			if (referenceSpeed < 0) {
+				referenceSpeed = 0;
+			} else {
+			    if(referenceSpeed+step > 0) {
+	                referenceSpeed += step;
+	            } else {
+			        referenceSpeed = 0;
+	            }
+			}
+	
+			enforceSpeedLimit();
+			
+			try {
+				wait(500l);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
-		enforceSpeedLimit();
 	}
 
 	@Override
@@ -43,7 +63,7 @@ public class TrainControllerImpl implements TrainController {
 
 	@Override
 	public void setJoystickPosition(int joystickPosition) {
-		this.step = joystickPosition;		
+		this.step = joystickPosition;
 	}
 
 }
